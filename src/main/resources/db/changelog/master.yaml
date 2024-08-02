@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: sql/init_users.sql
+  - include:
+      file: sql/init_language.sql
+  - include:
+      file: sql/init_translation.sql
