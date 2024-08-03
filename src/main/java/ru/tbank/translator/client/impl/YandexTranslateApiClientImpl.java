@@ -4,6 +4,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import ru.tbank.translator.client.TranslateApiClient;
+import ru.tbank.translator.configuration.ApplicationConfig;
+import ru.tbank.translator.dto.yandex_translate.YandexDetectLanguageRequestDto;
+import ru.tbank.translator.dto.yandex_translate.YandexDetectLanguageResponseDto;
 import ru.tbank.translator.dto.yandex_translate.YandexTranslateRequestBodyDto;
 import ru.tbank.translator.dto.yandex_translate.YandexTranslationResultDto;
 
@@ -15,15 +18,17 @@ public class YandexTranslateApiClientImpl implements TranslateApiClient {
 
     private final RestTemplate restTemplate;
     private final HttpHeaders httpHeaders;
-    private final URI apiUrl;
+    private final URI translateApiUrl;
+    private final URI detectLanguageApiUrl;
 
-    public YandexTranslateApiClientImpl(RestTemplate restTemplate, String yandexTranslateUrl, String yandexApiKey) {
+    public YandexTranslateApiClientImpl(RestTemplate restTemplate, ApplicationConfig applicationConfig) {
         this.restTemplate = restTemplate;
-        this.apiUrl = URI.create(yandexTranslateUrl);
+        this.translateApiUrl = URI.create(applicationConfig.yandexTranslateUrl());
+        this.detectLanguageApiUrl = URI.create(applicationConfig.yandexDetectLanguageUrl());
 
         httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        httpHeaders.set(HttpHeaders.AUTHORIZATION, "Api-Key " + yandexApiKey);
+        httpHeaders.set(HttpHeaders.AUTHORIZATION, "Api-Key " + applicationConfig.yandexApiKey());
     }
 
     @Override
@@ -36,10 +41,28 @@ public class YandexTranslateApiClientImpl implements TranslateApiClient {
 
         HttpEntity<YandexTranslateRequestBodyDto> httpEntity = new HttpEntity<>(bodyDto, httpHeaders);
 
-        ResponseEntity<YandexTranslationResultDto> result = restTemplate.exchange(apiUrl, HttpMethod.POST, httpEntity, YandexTranslationResultDto.class);
+        ResponseEntity<YandexTranslationResultDto> result = restTemplate.exchange(
+                translateApiUrl, HttpMethod.POST, httpEntity, YandexTranslationResultDto.class);
 
         YandexTranslationResultDto resultBody = result.getBody();
 
         return resultBody.translationResults().getFirst().text();
+    }
+
+    private String detectLanguage(String word) {
+        YandexDetectLanguageRequestDto bodyDto = new YandexDetectLanguageRequestDto(word);
+
+        HttpEntity<YandexDetectLanguageRequestDto> httpEntity = new HttpEntity<>(bodyDto, httpHeaders);
+
+        ResponseEntity<YandexDetectLanguageResponseDto> result = restTemplate.exchange(
+                detectLanguageApiUrl, HttpMethod.POST, httpEntity, YandexDetectLanguageResponseDto.class);
+
+        return result.getBody().languageCode();
+    }
+
+    @Override
+    public String translateWord(String word, String targetLanguage) {
+        String sourceLanguage = detectLanguage(word);
+        return translateWord(word, sourceLanguage, targetLanguage);
     }
 }
