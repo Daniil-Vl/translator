@@ -8,7 +8,7 @@ public interface TranslationRepository {
     /**
      * Add translation record to database
      *
-     * @param translationDto - information about translation
+     * @param translation - information about translation
      * @return translation info
      */
     void addTranslation(Translation translation);
