@@ -16,12 +16,10 @@ public class YandexTranslateApiClientImpl implements TranslateApiClient {
     private final RestTemplate restTemplate;
     private final HttpHeaders httpHeaders;
     private final URI apiUrl;
-    private final String folderId;
 
-    public YandexTranslateApiClientImpl(RestTemplate restTemplate, String yandexTranslateUrl, String yandexApiKey, String yandexFolderId) {
+    public YandexTranslateApiClientImpl(RestTemplate restTemplate, String yandexTranslateUrl, String yandexApiKey) {
         this.restTemplate = restTemplate;
         this.apiUrl = URI.create(yandexTranslateUrl);
-        this.folderId = yandexFolderId;
 
         httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -33,7 +31,6 @@ public class YandexTranslateApiClientImpl implements TranslateApiClient {
         YandexTranslateRequestBodyDto bodyDto = new YandexTranslateRequestBodyDto(
                 sourceLanguage,
                 targetLanguage,
-                folderId,
                 List.of(word)
         );
 

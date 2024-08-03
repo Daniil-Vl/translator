@@ -7,7 +7,6 @@ import java.util.List;
 public record YandexTranslateRequestBodyDto(
         @JsonProperty("sourceLanguageCode") String sourceLanguageCode,
         @JsonProperty("targetLanguageCode") String targetLanguageCode,
-        @JsonProperty("folderId") String folderId,
         @JsonProperty("texts") List<String> texts
 ) {
 }

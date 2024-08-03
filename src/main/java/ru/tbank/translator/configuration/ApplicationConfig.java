@@ -10,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(
         @Bean @NotNull String yandexTranslateUrl,
         @Bean @NotNull String yandexApiKey,
-        @Bean @NotNull String yandexFolderId,
         @NotNull Integer threadsNumber
 ) {
 }
