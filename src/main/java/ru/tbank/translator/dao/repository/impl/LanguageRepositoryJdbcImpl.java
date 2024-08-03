@@ -7,6 +7,7 @@ import ru.tbank.translator.dao.model.Language;
 import ru.tbank.translator.dao.repository.LanguageRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -28,6 +29,15 @@ public class LanguageRepositoryJdbcImpl implements LanguageRepository {
                 .sql("DELETE FROM language WHERE name = ?")
                 .param(name)
                 .update();
+    }
+
+    @Override
+    public Optional<Language> getLanguage(String name) {
+        return jdbcClient
+                .sql("SELECT * FROM language WHERE name = ?")
+                .param(name)
+                .query(Language.class)
+                .optional();
     }
 
     @Override
