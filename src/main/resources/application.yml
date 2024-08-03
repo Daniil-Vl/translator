@@ -10,3 +10,7 @@ spring:
     enabled: false
     change-log: classpath:db/changelog/master.yaml
 
+app:
+  yandex-translate-url: ${YANDEX_TRANSLATE_URL}
+  yandex-api-key: ${YANDEX_API_KEY}
+  yandex-folder-id: ${YANDEX_FOLDER_ID}
