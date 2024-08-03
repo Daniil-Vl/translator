@@ -1,7 +1,6 @@
 package ru.tbank.translator.dao.repository;
 
 import ru.tbank.translator.dao.model.Translation;
-import ru.tbank.translator.dto.TranslationDto;
 
 import java.util.List;
 
@@ -12,7 +11,7 @@ public interface TranslationRepository {
      * @param translationDto - information about translation
      * @return translation info
      */
-    Translation addTranslation(Translation translationDto);
+    void addTranslation(Translation translation);
 
     /**
      * Returns translation history
