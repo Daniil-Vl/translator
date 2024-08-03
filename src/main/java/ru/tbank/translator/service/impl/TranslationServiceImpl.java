@@ -3,7 +3,7 @@ package ru.tbank.translator.service.impl;
 import org.springframework.stereotype.Service;
 import ru.tbank.translator.client.TranslateApiClient;
 import ru.tbank.translator.configuration.ApplicationConfig;
-import ru.tbank.translator.service.TranslatorService;
+import ru.tbank.translator.service.TranslationService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +13,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
-public class TranslatorServiceImpl implements TranslatorService {
+public class TranslationServiceImpl implements TranslationService {
 
     private final TranslateApiClient translateApiClient;
     private final ExecutorService executorService;
 
-    public TranslatorServiceImpl(TranslateApiClient translateApiClient, ApplicationConfig applicationConfig) {
+    public TranslationServiceImpl(TranslateApiClient translateApiClient, ApplicationConfig applicationConfig) {
         this.translateApiClient = translateApiClient;
         this.executorService = Executors.newFixedThreadPool(applicationConfig.threadsNumber());
     }
@@ -43,5 +43,11 @@ public class TranslatorServiceImpl implements TranslatorService {
         }
 
         return translatedText.toString().stripTrailing();
+    }
+
+    @Override
+    public String translateSentence(String text, String targetLanguage) throws ExecutionException, InterruptedException {
+        String sourceLanguage = translateApiClient.detectLanguage(text);
+        return translateSentence(text, sourceLanguage, targetLanguage);
     }
 }

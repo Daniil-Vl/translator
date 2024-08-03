@@ -12,11 +12,10 @@ public interface TranslateApiClient {
     String translateWord(String word, String sourceLanguage, String targetLanguage);
 
     /**
-     * Detect source language and translated given word to target language
+     * Detect text's language
      *
-     * @param word           - word to translate
-     * @param targetLanguage - the language to translate the word into
-     * @return translated word
+     * @param text - the text whose language you need to get
+     * @return text's language
      */
-    String translateWord(String word, String targetLanguage);
+    String detectLanguage(String text);
 }

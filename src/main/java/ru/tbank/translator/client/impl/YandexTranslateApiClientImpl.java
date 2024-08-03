@@ -49,7 +49,8 @@ public class YandexTranslateApiClientImpl implements TranslateApiClient {
         return resultBody.translationResults().getFirst().text();
     }
 
-    private String detectLanguage(String word) {
+    @Override
+    public String detectLanguage(String word) {
         YandexDetectLanguageRequestDto bodyDto = new YandexDetectLanguageRequestDto(word);
 
         HttpEntity<YandexDetectLanguageRequestDto> httpEntity = new HttpEntity<>(bodyDto, httpHeaders);
@@ -58,11 +59,5 @@ public class YandexTranslateApiClientImpl implements TranslateApiClient {
                 detectLanguageApiUrl, HttpMethod.POST, httpEntity, YandexDetectLanguageResponseDto.class);
 
         return result.getBody().languageCode();
-    }
-
-    @Override
-    public String translateWord(String word, String targetLanguage) {
-        String sourceLanguage = detectLanguage(word);
-        return translateWord(word, sourceLanguage, targetLanguage);
     }
 }
