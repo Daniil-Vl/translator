@@ -16,7 +16,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     @Override
     public void addUser(String userIp) {
         jdbcClient
-                .sql("INSERT INTO users (ip) VALUES (?:cidr)")
+                .sql("INSERT INTO users (ip) VALUES (?::cidr)")
                 .param(userIp)
                 .update();
     }
@@ -24,7 +24,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     @Override
     public boolean isExists(String userIp) {
         Optional<String> optionalUser = jdbcClient
-                .sql("SELECT * FROM users WHERE ip = ?:cidr")
+                .sql("SELECT * FROM users WHERE ip = ?::cidr")
                 .param(userIp)
                 .query(String.class)
                 .optional();
