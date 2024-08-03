@@ -8,3 +8,5 @@ spring:
     password: ${POSTGRES_PASSWORD}
   liquibase:
     enabled: false
+    change-log: classpath:db/changelog/master.yaml
+
