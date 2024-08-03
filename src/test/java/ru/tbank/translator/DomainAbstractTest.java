@@ -1,4 +1,4 @@
-package ru.tbank.translator.domain;
+package ru.tbank.translator;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import ru.tbank.translator.TranslatorApplicationTests;
 import ru.tbank.translator.dto.TranslationDto;
 
 import java.time.OffsetDateTime;

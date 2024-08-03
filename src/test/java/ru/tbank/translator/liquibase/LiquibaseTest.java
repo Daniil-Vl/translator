@@ -1,7 +1,7 @@
-package ru.tbank.translator.domain.liquibase;
+package ru.tbank.translator.liquibase;
 
 import org.junit.jupiter.api.Test;
-import ru.tbank.translator.domain.DomainAbstractTest;
+import ru.tbank.translator.DomainAbstractTest;
 import ru.tbank.translator.dto.TranslationDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
