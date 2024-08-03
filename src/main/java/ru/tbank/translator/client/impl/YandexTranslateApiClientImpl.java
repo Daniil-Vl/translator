@@ -1,8 +1,9 @@
-package ru.tbank.translator.client;
+package ru.tbank.translator.client.impl;
 
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import ru.tbank.translator.client.TranslateApiClient;
 import ru.tbank.translator.dto.yandex_translate.YandexTranslateRequestBodyDto;
 import ru.tbank.translator.dto.yandex_translate.YandexTranslationResultDto;
 
