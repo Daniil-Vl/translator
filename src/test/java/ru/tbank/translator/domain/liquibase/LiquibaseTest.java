@@ -40,15 +40,7 @@ public class LiquibaseTest extends DomainAbstractTest {
                 .query(TranslationDto.class)
                 .single();
 
-        TranslationDto expected = new TranslationDto(
-                "Hello world",
-                "Привет мир",
-                "en",
-                "ru",
-                "127.0.0.1/32"
-        );
-
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).isEqualTo(translationDto);
     }
 
 }

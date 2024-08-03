@@ -7,10 +7,22 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import ru.tbank.translator.TranslatorApplicationTests;
+import ru.tbank.translator.dto.TranslationDto;
+
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 public abstract class DomainAbstractTest extends TranslatorApplicationTests {
     @Autowired
     protected JdbcClient jdbcClient;
+
+    protected TranslationDto translationDto = new TranslationDto(
+            "Hello world",
+            "Привет мир",
+            "en",
+            "ru",
+            "127.0.0.1/32",
+            OffsetDateTime.of(2024, 1, 1, 1, 1, 1, 0, ZoneOffset.UTC));
 
     @DynamicPropertySource
     static void liquibaseProperties(DynamicPropertyRegistry registry) {
@@ -30,9 +42,19 @@ public abstract class DomainAbstractTest extends TranslatorApplicationTests {
 
         jdbcClient
                 .sql("""
-                        INSERT INTO translation (source_text, translated_text, source_language, target_language, user_ip) VALUES
-                                            ('Hello world', 'Привет мир', 'en', 'ru', '127.0.0.1')
-                        """).update();
+                        INSERT INTO translation
+                        (source_text, translated_text, source_language, target_language, user_ip, translation_date_time)
+                        VALUES (?, ?, ?, ?, ?::cidr, ?)
+                        """)
+                .param(translationDto.sourceText())
+                .param(translationDto.translatedText())
+                .param(translationDto.sourceLanguage())
+                .param(translationDto.targetLanguage())
+                .param(translationDto.userIp())
+                .param(translationDto.translationDateTime())
+                .update();
+
+
     }
 
     @AfterEach
