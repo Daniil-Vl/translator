@@ -40,6 +40,21 @@ public class YandexTranslateApiClientImpl implements TranslateApiClient {
                 List.of(word)
         );
 
+        return getTranslatedWord(bodyDto);
+    }
+
+    @Override
+    public String translateWord(String word, String targetLanguage) {
+        TranslateRequest bodyDto = new TranslateRequest(
+                null,
+                targetLanguage,
+                List.of(word)
+        );
+
+        return getTranslatedWord(bodyDto);
+    }
+
+    private String getTranslatedWord(TranslateRequest bodyDto) {
         HttpEntity<TranslateRequest> httpEntity = new HttpEntity<>(bodyDto, httpHeaders);
 
         ResponseEntity<TranslateResponse> result = restTemplate.exchange(

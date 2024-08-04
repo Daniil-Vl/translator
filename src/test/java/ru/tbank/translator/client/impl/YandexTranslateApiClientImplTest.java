@@ -27,22 +27,22 @@ class YandexTranslateApiClientImplTest {
 
     private static TranslateApiClient yandexTranslateApiClient;
 
-    private static TranslateRequest translateRequestBody;
-    private static TranslateResponse translateResponseBody;
+    private static TranslateRequest translateRequest;
+    private static TranslateResponse translateResponse;
 
-    private static DetectLanguageRequest detectLanguageRequestBody;
-    private static DetectLanguageResponse detectLanguageResponseBody;
+    private static DetectLanguageRequest detectLanguageRequest;
+    private static DetectLanguageResponse detectLanguageResponse;
 
     static void initJsons() {
-        translateRequestBody = new TranslateRequest("en", "ru", List.of("Hello"));
+        translateRequest = new TranslateRequest("en", "ru", List.of("Hello"));
 
-        translateResponseBody = new TranslateResponse(List.of(
+        translateResponse = new TranslateResponse(List.of(
                 new TranslateResponse.TranslationResult("Привет")
         ));
 
-        detectLanguageRequestBody = new DetectLanguageRequest("Hello");
+        detectLanguageRequest = new DetectLanguageRequest("Hello");
 
-        detectLanguageResponseBody = new DetectLanguageResponse("en");
+        detectLanguageResponse = new DetectLanguageResponse("en");
     }
 
     @BeforeAll
@@ -69,12 +69,30 @@ class YandexTranslateApiClientImplTest {
                 post("/translate-test")
                         .withHeader(CONTENT_TYPE, equalTo(APPLICATION_JSON_VALUE))
                         .withHeader(AUTHORIZATION, equalTo("Api-Key " + mockedApplicationConfig.yandexApiKey()))
-                        .withRequestBody(equalToJson(objectMapper.writeValueAsString(translateRequestBody)))
+                        .withRequestBody(equalToJson(objectMapper.writeValueAsString(translateRequest)))
                         .willReturn(
                                 aResponse()
                                         .withStatus(HttpStatus.OK.value())
                                         .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                                        .withBody(objectMapper.writeValueAsString(translateResponseBody))
+                                        .withBody(objectMapper.writeValueAsString(translateResponse))
+
+                        )
+        );
+
+        // POST /translate with translateRequestBodyWithoutSourceLanguage returns translateResponseBody
+        TranslateRequest translateRequestBodyWithoutSourceLanguage =
+                new TranslateRequest(null, translateRequest.targetLanguageCode(), translateRequest.texts());
+
+        wireMockServer.stubFor(
+                post("/translate-test")
+                        .withHeader(CONTENT_TYPE, equalTo(APPLICATION_JSON_VALUE))
+                        .withHeader(AUTHORIZATION, equalTo("Api-Key " + mockedApplicationConfig.yandexApiKey()))
+                        .withRequestBody(equalToJson(objectMapper.writeValueAsString(translateRequestBodyWithoutSourceLanguage)))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(HttpStatus.OK.value())
+                                        .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                                        .withBody(objectMapper.writeValueAsString(translateResponse))
 
                         )
         );
@@ -84,12 +102,12 @@ class YandexTranslateApiClientImplTest {
                 post("/detect-test")
                         .withHeader(CONTENT_TYPE, equalTo(APPLICATION_JSON_VALUE))
                         .withHeader(AUTHORIZATION, equalTo("Api-Key " + mockedApplicationConfig.yandexApiKey()))
-                        .withRequestBody(equalToJson(objectMapper.writeValueAsString(detectLanguageRequestBody)))
+                        .withRequestBody(equalToJson(objectMapper.writeValueAsString(detectLanguageRequest)))
                         .willReturn(
                                 aResponse()
                                         .withStatus(HttpStatus.OK.value())
                                         .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                                        .withBody(objectMapper.writeValueAsString(detectLanguageResponseBody))
+                                        .withBody(objectMapper.writeValueAsString(detectLanguageResponse))
 
                         )
         );
@@ -104,6 +122,17 @@ class YandexTranslateApiClientImplTest {
         String targetLanguage = "ru";
 
         String translatedWord = yandexTranslateApiClient.translateWord(text, sourceLanguage, targetLanguage);
+
+        assertThat(translatedWord).isEqualTo(expected);
+    }
+
+    @Test
+    void givenTextAndTargetLanguage_whenTranslateWord_thenSuccessfullyTranslated() {
+        String text = "Hello";
+        String expected = "Привет";
+        String targetLanguage = "ru";
+
+        String translatedWord = yandexTranslateApiClient.translateWord(text, targetLanguage);
 
         assertThat(translatedWord).isEqualTo(expected);
     }
