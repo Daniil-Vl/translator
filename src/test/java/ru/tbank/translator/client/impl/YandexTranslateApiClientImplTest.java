@@ -56,8 +56,8 @@ class YandexTranslateApiClientImplTest {
         RestTemplate restTemplate = new RestTemplate();
 
         ApplicationConfig mockedApplicationConfig = new ApplicationConfig(
-                wireMockServer.url("/translate"),
-                wireMockServer.url("/detect"),
+                wireMockServer.url("/translate-test"),
+                wireMockServer.url("/detect-test"),
                 "api-key",
                 1
         );
@@ -66,7 +66,7 @@ class YandexTranslateApiClientImplTest {
 
         // POST /translate with translateRequestBody returns translateResponseBody
         wireMockServer.stubFor(
-                post("/translate")
+                post("/translate-test")
                         .withHeader(CONTENT_TYPE, equalTo(APPLICATION_JSON_VALUE))
                         .withHeader(AUTHORIZATION, equalTo("Api-Key " + mockedApplicationConfig.yandexApiKey()))
                         .withRequestBody(equalToJson(objectMapper.writeValueAsString(translateRequestBody)))
@@ -81,7 +81,7 @@ class YandexTranslateApiClientImplTest {
 
         // POST /translate with detectLanguageRequestBody returns detectLanguageResponseBody
         wireMockServer.stubFor(
-                post("/detect")
+                post("/detect-test")
                         .withHeader(CONTENT_TYPE, equalTo(APPLICATION_JSON_VALUE))
                         .withHeader(AUTHORIZATION, equalTo("Api-Key " + mockedApplicationConfig.yandexApiKey()))
                         .withRequestBody(equalToJson(objectMapper.writeValueAsString(detectLanguageRequestBody)))
