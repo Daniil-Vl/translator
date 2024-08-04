@@ -36,6 +36,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.assertj:assertj-core:3.11.1")
+
+//    testImplementation("org.wiremock:wiremock:3.9.1") 3.3.1
+    testImplementation("org.wiremock:wiremock-standalone:3.3.1")
+
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
