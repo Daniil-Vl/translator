@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public record YandexTranslateRequestBodyDto(
+public record TranslateRequest(
         @JsonProperty("sourceLanguageCode") String sourceLanguageCode,
         @JsonProperty("targetLanguageCode") String targetLanguageCode,
         @JsonProperty("texts") List<String> texts
