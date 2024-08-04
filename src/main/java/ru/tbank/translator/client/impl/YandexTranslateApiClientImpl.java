@@ -23,6 +23,7 @@ public class YandexTranslateApiClientImpl implements TranslateApiClient {
 
     public YandexTranslateApiClientImpl(RestTemplate restTemplate, ApplicationConfig applicationConfig) {
         this.restTemplate = restTemplate;
+
         this.translateApiUrl = URI.create(applicationConfig.yandexTranslateUrl());
         this.detectLanguageApiUrl = URI.create(applicationConfig.yandexDetectLanguageUrl());
 

@@ -17,7 +17,7 @@ public record TranslateResponse(
         }
 
         return "YandexTranslationResultDto{" +
-                "translationResults=" + results.toString() +
+                "translationResults=" + results +
                 '}';
     }
 

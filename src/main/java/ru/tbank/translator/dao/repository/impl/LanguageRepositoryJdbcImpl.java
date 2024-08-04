@@ -12,6 +12,7 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 public class LanguageRepositoryJdbcImpl implements LanguageRepository {
+
     private final JdbcClient jdbcClient;
 
     @Override

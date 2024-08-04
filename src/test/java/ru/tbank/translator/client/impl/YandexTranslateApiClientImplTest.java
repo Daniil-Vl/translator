@@ -25,11 +25,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 class YandexTranslateApiClientImplTest {
 
-    private static WireMockServer wireMockServer;
     private static TranslateApiClient yandexTranslateApiClient;
-
-    private static RestTemplate restTemplate;
-    private static ObjectMapper objectMapper;
 
     private static TranslateRequest translateRequestBody;
     private static TranslateResponse translateResponseBody;
@@ -53,11 +49,11 @@ class YandexTranslateApiClientImplTest {
     static void initServerAndClient() throws JsonProcessingException {
         initJsons();
 
-        wireMockServer = new WireMockServer(8089);
+        WireMockServer wireMockServer = new WireMockServer(8089);
         wireMockServer.start();
 
-        objectMapper = new ObjectMapper();
-        restTemplate = new RestTemplate();
+        ObjectMapper objectMapper = new ObjectMapper();
+        RestTemplate restTemplate = new RestTemplate();
 
         ApplicationConfig mockedApplicationConfig = new ApplicationConfig(
                 wireMockServer.url("/translate"),
