@@ -25,7 +25,7 @@ public class TranslationServiceImpl implements TranslationService {
     }
 
     @Override
-    public String translateSentence(String text, String sourceLanguage, String targetLanguage) throws ExecutionException, InterruptedException {
+    public TranslateResponse translateSentence(String text, String sourceLanguage, String targetLanguage) throws ExecutionException, InterruptedException {
         String[] tokens = text.split(" ");
         StringBuilder translatedText = new StringBuilder();
         List<CompletableFuture<TranslateResponse>> tasks = new ArrayList<>();
@@ -43,11 +43,15 @@ public class TranslationServiceImpl implements TranslationService {
             translatedText.append(task.get().translatedText()).append(" ");
         }
 
-        return translatedText.toString().stripTrailing();
+        return new TranslateResponse(
+                translatedText.toString().stripTrailing(),
+                sourceLanguage,
+                targetLanguage
+        );
     }
 
     @Override
-    public String translateSentence(String text, String targetLanguage) throws ExecutionException, InterruptedException {
+    public TranslateResponse translateSentence(String text, String targetLanguage) throws ExecutionException, InterruptedException {
         String sourceLanguage = translateApiClient.detectLanguage(text);
         return translateSentence(text, sourceLanguage, targetLanguage);
     }

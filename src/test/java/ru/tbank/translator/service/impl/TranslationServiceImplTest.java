@@ -61,8 +61,8 @@ class TranslationServiceImplTest {
         String sourceLanguage = "en";
         String targetLanguage = "ru";
 
-        String translatedText = translationServiceImpl.translateSentence(text, sourceLanguage, targetLanguage);
-        assertThat(translatedText).isEqualTo(expectedTranslatedText);
+        TranslateResponse translatedText = translationServiceImpl.translateSentence(text, sourceLanguage, targetLanguage);
+        assertThat(translatedText.translatedText()).isEqualTo(expectedTranslatedText);
     }
 
     @Test
@@ -72,8 +72,10 @@ class TranslationServiceImplTest {
         String text = "Hello world";
         String expectedTranslatedText = "Привет мир";
         String targetLanguage = "ru";
+        String expectedSourceLanguage = "en";
 
-        String translatedText = translationServiceImpl.translateSentence(text, targetLanguage);
-        assertThat(translatedText).isEqualTo(expectedTranslatedText);
+        TranslateResponse translatedText = translationServiceImpl.translateSentence(text, targetLanguage);
+        assertThat(translatedText.translatedText()).isEqualTo(expectedTranslatedText);
+        assertThat(translatedText.sourceLanguage()).isEqualTo(expectedSourceLanguage);
     }
 }
