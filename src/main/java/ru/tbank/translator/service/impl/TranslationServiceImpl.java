@@ -3,6 +3,7 @@ package ru.tbank.translator.service.impl;
 import org.springframework.stereotype.Service;
 import ru.tbank.translator.client.TranslateApiClient;
 import ru.tbank.translator.configuration.ApplicationConfig;
+import ru.tbank.translator.dto.yandex_translate.TranslateResponse;
 import ru.tbank.translator.service.TranslationService;
 
 import java.util.ArrayList;
@@ -27,10 +28,10 @@ public class TranslationServiceImpl implements TranslationService {
     public String translateSentence(String text, String sourceLanguage, String targetLanguage) throws ExecutionException, InterruptedException {
         String[] tokens = text.split(" ");
         StringBuilder translatedText = new StringBuilder();
-        List<CompletableFuture<String>> tasks = new ArrayList<>();
+        List<CompletableFuture<TranslateResponse>> tasks = new ArrayList<>();
 
         for (String token : tokens) {
-            CompletableFuture<String> completableFuture = CompletableFuture
+            CompletableFuture<TranslateResponse> completableFuture = CompletableFuture
                     .supplyAsync(
                             () -> translateApiClient.translateWord(token, sourceLanguage, targetLanguage),
                             executorService
@@ -39,7 +40,7 @@ public class TranslationServiceImpl implements TranslationService {
         }
 
         for (var task : tasks) {
-            translatedText.append(task.get()).append(" ");
+            translatedText.append(task.get().translatedText()).append(" ");
         }
 
         return translatedText.toString().stripTrailing();

@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.tbank.translator.client.TranslateApiClient;
 import ru.tbank.translator.configuration.ApplicationConfig;
+import ru.tbank.translator.dto.yandex_translate.TranslateResponse;
 
 import java.util.concurrent.ExecutionException;
 
@@ -25,8 +26,17 @@ class TranslationServiceImplTest {
     private TranslationServiceImpl translationServiceImpl;
 
     void initMockedTranslateMethod() {
-        Mockito.when(translateApiClient.translateWord("Hello", "en", "ru")).thenReturn("Привет");
-        Mockito.when(translateApiClient.translateWord("world", "en", "ru")).thenReturn("мир");
+        Mockito.when(
+                translateApiClient.translateWord("Hello", "en", "ru")
+        ).thenReturn(
+                new TranslateResponse("Привет", "en", "ru")
+        );
+
+        Mockito.when(
+                translateApiClient.translateWord("world", "en", "ru")
+        ).thenReturn(
+                new TranslateResponse("мир", "en", "ru")
+        );
     }
 
     void initMockedDetectLanguageMethod() {

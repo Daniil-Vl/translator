@@ -1,5 +1,7 @@
 package ru.tbank.translator.client;
 
+import ru.tbank.translator.dto.yandex_translate.TranslateResponse;
+
 public interface TranslateApiClient {
     /**
      * Translate single word using underlying translate api
@@ -9,7 +11,7 @@ public interface TranslateApiClient {
      * @param targetLanguage - the language to translate the word into
      * @return translated word
      */
-    String translateWord(String word, String sourceLanguage, String targetLanguage);
+    TranslateResponse translateWord(String word, String sourceLanguage, String targetLanguage);
 
     /**
      * Detects word's source language and translated it to target language using underlying translate api
@@ -18,7 +20,7 @@ public interface TranslateApiClient {
      * @param targetLanguage - the language to translate the word into
      * @return translated word
      */
-    String translateWord(String word, String targetLanguage);
+    TranslateResponse translateWord(String word, String targetLanguage);
 
     /**
      * Detect text's language

@@ -12,7 +12,7 @@ import ru.tbank.translator.configuration.ApplicationConfig;
 import ru.tbank.translator.dto.yandex_translate.DetectLanguageRequest;
 import ru.tbank.translator.dto.yandex_translate.DetectLanguageResponse;
 import ru.tbank.translator.dto.yandex_translate.TranslateRequest;
-import ru.tbank.translator.dto.yandex_translate.TranslateResponse;
+import ru.tbank.translator.dto.yandex_translate.YandexTranslateResponseDto;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ class YandexTranslateApiClientImplTest {
     private static TranslateApiClient yandexTranslateApiClient;
 
     private static TranslateRequest translateRequest;
-    private static TranslateResponse translateResponse;
+    private static YandexTranslateResponseDto yandexTranslateResponseDto;
 
     private static DetectLanguageRequest detectLanguageRequest;
     private static DetectLanguageResponse detectLanguageResponse;
@@ -36,8 +36,8 @@ class YandexTranslateApiClientImplTest {
     static void initJsons() {
         translateRequest = new TranslateRequest("en", "ru", List.of("Hello"));
 
-        translateResponse = new TranslateResponse(List.of(
-                new TranslateResponse.TranslationResult("Привет")
+        yandexTranslateResponseDto = new YandexTranslateResponseDto(List.of(
+                new YandexTranslateResponseDto.TranslationResult("Привет", "en")
         ));
 
         detectLanguageRequest = new DetectLanguageRequest("Hello");
@@ -74,7 +74,7 @@ class YandexTranslateApiClientImplTest {
                                 aResponse()
                                         .withStatus(HttpStatus.OK.value())
                                         .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                                        .withBody(objectMapper.writeValueAsString(translateResponse))
+                                        .withBody(objectMapper.writeValueAsString(yandexTranslateResponseDto))
 
                         )
         );
@@ -92,7 +92,7 @@ class YandexTranslateApiClientImplTest {
                                 aResponse()
                                         .withStatus(HttpStatus.OK.value())
                                         .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                                        .withBody(objectMapper.writeValueAsString(translateResponse))
+                                        .withBody(objectMapper.writeValueAsString(yandexTranslateResponseDto))
 
                         )
         );
@@ -113,7 +113,6 @@ class YandexTranslateApiClientImplTest {
         );
     }
 
-
     @Test
     void givenTextAndBothLanguages_whenTranslateWord_thenSuccessfullyTranslated() {
         String text = "Hello";
@@ -121,7 +120,7 @@ class YandexTranslateApiClientImplTest {
         String sourceLanguage = "en";
         String targetLanguage = "ru";
 
-        String translatedWord = yandexTranslateApiClient.translateWord(text, sourceLanguage, targetLanguage);
+        String translatedWord = yandexTranslateApiClient.translateWord(text, sourceLanguage, targetLanguage).translatedText();
 
         assertThat(translatedWord).isEqualTo(expected);
     }
@@ -132,7 +131,7 @@ class YandexTranslateApiClientImplTest {
         String expected = "Привет";
         String targetLanguage = "ru";
 
-        String translatedWord = yandexTranslateApiClient.translateWord(text, targetLanguage);
+        String translatedWord = yandexTranslateApiClient.translateWord(text, targetLanguage).translatedText();
 
         assertThat(translatedWord).isEqualTo(expected);
     }
