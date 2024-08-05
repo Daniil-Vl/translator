@@ -1,0 +1,1 @@
+{<EOL> "code": 3,<EOL> "message": "unsupported source_language_code: fu",<EOL> "details": [<EOL>  {<EOL>   "@type": "type.googleapis.com/google.rpc.RequestInfo",<EOL>   "requestId": "123456789"<EOL>  }<EOL> ]<EOL>}<EOL>"
