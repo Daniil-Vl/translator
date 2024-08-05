@@ -31,11 +31,15 @@ public interface TranslatorController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Не определен исходный язык или язык перевода / Ошибка доступа к ресурсу перевода",
-                    content = @Content(
-                            mediaType = APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ApiErrorResponse.class)
-                    )
+                    description = """
+                            Не определен исходный язык или язык перевода / \n
+                            Тело запроса содержит пустые строки (текст или один из языков) / \n
+                            Ошибка доступа к ресурсу перевода
+                            """,
+                    content= @Content(
+                    mediaType = APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ApiErrorResponse.class)
+            )
             )
     })
     @PostMapping(
