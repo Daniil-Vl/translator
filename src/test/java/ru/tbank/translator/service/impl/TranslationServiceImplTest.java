@@ -3,9 +3,13 @@ package ru.tbank.translator.service.impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import ru.tbank.translator.client.TranslateApiClient;
 import ru.tbank.translator.configuration.ApplicationConfig;
 import ru.tbank.translator.dto.yandex_translate.TranslateResponse;
@@ -15,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class TranslationServiceImplTest {
 
     @Mock
@@ -34,6 +39,18 @@ class TranslationServiceImplTest {
 
         Mockito.when(
                 translateApiClient.translateWord("world", "en", "ru")
+        ).thenReturn(
+                new TranslateResponse("мир", "en", "ru")
+        );
+
+        Mockito.when(
+                translateApiClient.translateWord("Hello", null, "ru")
+        ).thenReturn(
+                new TranslateResponse("Привет", "en", "ru")
+        );
+
+        Mockito.when(
+                translateApiClient.translateWord("world", null, "ru")
         ).thenReturn(
                 new TranslateResponse("мир", "en", "ru")
         );

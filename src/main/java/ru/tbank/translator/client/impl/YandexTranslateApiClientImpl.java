@@ -43,6 +43,10 @@ public class YandexTranslateApiClientImpl implements TranslateApiClient {
         YandexTranslateResponseDto yandexTranslateResponseDto = getTranslatedWord(bodyDto);
         YandexTranslateResponseDto.TranslationResult translationResult = yandexTranslateResponseDto.translationResults().getFirst();
 
+        if (sourceLanguage == null) {
+            sourceLanguage = translationResult.detectedLanguageCode();
+        }
+
         return new TranslateResponse(
                 translationResult.text(),
                 sourceLanguage,

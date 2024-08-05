@@ -43,16 +43,20 @@ public class TranslationServiceImpl implements TranslationService {
             translatedText.append(task.get().translatedText()).append(" ");
         }
 
+        String resultSourceLanguage = sourceLanguage;
+        if (resultSourceLanguage == null) {
+            resultSourceLanguage = tasks.getFirst().get().sourceLanguage();
+        }
+
         return new TranslateResponse(
                 translatedText.toString().stripTrailing(),
-                sourceLanguage,
+                resultSourceLanguage,
                 targetLanguage
         );
     }
 
     @Override
     public TranslateResponse translateSentence(String text, String targetLanguage) throws ExecutionException, InterruptedException {
-        String sourceLanguage = translateApiClient.detectLanguage(text);
-        return translateSentence(text, sourceLanguage, targetLanguage);
+        return translateSentence(text, null, targetLanguage);
     }
 }
