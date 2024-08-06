@@ -1,4 +1,20 @@
+version: "2.29.0"
+
 services:
+  translator-service:
+    container_name: translator-container
+    build:
+      dockerfile: Dockerfile
+    image: translator:latest
+    depends_on:
+      - postgresql
+    env_file:
+      - .env
+    ports:
+      - 8080:8080
+    networks:
+      - backend
+
   postgresql:
     image: postgres:16
     ports:
