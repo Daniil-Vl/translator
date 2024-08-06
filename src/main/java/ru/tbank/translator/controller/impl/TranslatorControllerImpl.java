@@ -6,11 +6,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.RestController;
 import ru.tbank.translator.controller.TranslatorController;
 import ru.tbank.translator.dao.model.Translation;
-import ru.tbank.translator.dao.repository.TranslationRepository;
-import ru.tbank.translator.dao.repository.UserRepository;
 import ru.tbank.translator.dto.controller_dto.TranslateRequest;
 import ru.tbank.translator.dto.controller_dto.TranslateResponse;
 import ru.tbank.translator.service.TranslationService;
+import ru.tbank.translator.service.UsersService;
 
 import java.time.OffsetDateTime;
 import java.util.concurrent.ExecutionException;
@@ -21,8 +20,7 @@ import java.util.concurrent.ExecutionException;
 public class TranslatorControllerImpl implements TranslatorController {
 
     private final TranslationService translationService;
-    private final TranslationRepository translationRepository;
-    private final UserRepository userRepository;
+    private final UsersService usersService;
 
     @Override
     public TranslateResponse translate(TranslateRequest requestBody, HttpServletRequest httpServletRequest) throws ExecutionException, InterruptedException {
@@ -43,12 +41,9 @@ public class TranslatorControllerImpl implements TranslatorController {
                 OffsetDateTime.now()
         );
 
-        if (!userRepository.isExists(userIp)) {
-            log.info("New user with ip - {}", userIp);
-            userRepository.addUser(userIp);
-        }
+        usersService.addUser(userIp);
 
-        translationRepository.addTranslation(translation);
+        translationService.saveTranslation(translation);
 
         return new TranslateResponse(
                 translateResponse.translatedText(),

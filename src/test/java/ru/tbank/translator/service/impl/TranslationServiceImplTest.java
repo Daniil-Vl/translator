@@ -3,15 +3,14 @@ package ru.tbank.translator.service.impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import ru.tbank.translator.client.TranslateApiClient;
 import ru.tbank.translator.configuration.ApplicationConfig;
+import ru.tbank.translator.dao.repository.TranslationRepository;
 import ru.tbank.translator.dto.yandex_translate.TranslateResponse;
 
 import java.util.concurrent.ExecutionException;
@@ -27,6 +26,9 @@ class TranslationServiceImplTest {
 
     @Mock
     private ApplicationConfig applicationConfig;
+
+    @Mock
+    private TranslationRepository translationRepository;
 
     private TranslationServiceImpl translationServiceImpl;
 
@@ -68,7 +70,7 @@ class TranslationServiceImplTest {
     void initTranslationService() {
         initMockedTranslateMethod();
         initMockedApplicationConfig();
-        translationServiceImpl = new TranslationServiceImpl(translateApiClient, applicationConfig);
+        translationServiceImpl = new TranslationServiceImpl(translateApiClient, applicationConfig, translationRepository);
     }
 
     @Test

@@ -4,6 +4,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import ru.tbank.translator.client.TranslateApiClient;
 import ru.tbank.translator.configuration.ApplicationConfig;
+import ru.tbank.translator.dao.model.Translation;
+import ru.tbank.translator.dao.repository.TranslationRepository;
 import ru.tbank.translator.dto.yandex_translate.TranslateResponse;
 import ru.tbank.translator.service.TranslationService;
 
@@ -20,9 +22,11 @@ public class TranslationServiceImpl implements TranslationService {
 
     private final TranslateApiClient translateApiClient;
     private final ExecutorService executorService;
+    private final TranslationRepository translationRepository;
 
-    public TranslationServiceImpl(TranslateApiClient translateApiClient, ApplicationConfig applicationConfig) {
+    public TranslationServiceImpl(TranslateApiClient translateApiClient, ApplicationConfig applicationConfig, TranslationRepository translationRepository) {
         this.translateApiClient = translateApiClient;
+        this.translationRepository = translationRepository;
         this.executorService = Executors.newFixedThreadPool(applicationConfig.threadsNumber());
     }
 
@@ -66,5 +70,10 @@ public class TranslationServiceImpl implements TranslationService {
     @Override
     public TranslateResponse translateSentence(String text, String targetLanguage) throws ExecutionException, InterruptedException {
         return translateSentence(text, null, targetLanguage);
+    }
+
+    @Override
+    public void saveTranslation(Translation translation) {
+        translationRepository.addTranslation(translation);
     }
 }
