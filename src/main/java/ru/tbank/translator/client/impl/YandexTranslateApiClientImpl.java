@@ -1,5 +1,6 @@
 package ru.tbank.translator.client.impl;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -14,6 +15,7 @@ import java.net.URI;
 import java.util.List;
 
 @Component
+@Log4j2
 public class YandexTranslateApiClientImpl implements TranslateApiClient {
 
     private final RestTemplate restTemplate;
@@ -94,12 +96,17 @@ public class YandexTranslateApiClientImpl implements TranslateApiClient {
                     .exchange(translateApiUrl, HttpMethod.POST, httpEntity, YandexTranslateResponseDto.class)
                     .getBody();
         } catch (HttpClientErrorException exc) {
-            if (exc.getStatusCode().is5xxServerError())
+            if (exc.getStatusCode().is5xxServerError()) {
+                log.warn("Caught http {} response", exc.getStatusCode());
                 throw new TranslateApiUnavailableException();
+            }
 
-            if (exc.getStatusCode().equals(HttpStatus.BAD_REQUEST))
+            if (exc.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
+                log.warn("Caught http {} response with request body {}", exc.getStatusCode(), bodyDto);
                 throw getCause(exc.getMessage());
+            }
 
+            log.fatal("Cannot process {}", exc.toString());
             throw new RuntimeException(exc);
         }
     }

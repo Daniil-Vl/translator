@@ -1,5 +1,6 @@
 package ru.tbank.translator.service.impl;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import ru.tbank.translator.client.TranslateApiClient;
 import ru.tbank.translator.configuration.ApplicationConfig;
@@ -14,6 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
+@Log4j2
 public class TranslationServiceImpl implements TranslationService {
 
     private final TranslateApiClient translateApiClient;
@@ -33,7 +35,12 @@ public class TranslationServiceImpl implements TranslationService {
         for (String token : tokens) {
             CompletableFuture<TranslateResponse> completableFuture = CompletableFuture
                     .supplyAsync(
-                            () -> translateApiClient.translateWord(token, sourceLanguage, targetLanguage),
+                            () -> {
+                                log.info("Translation task for work {} is starting...", token);
+                                var result = translateApiClient.translateWord(token, sourceLanguage, targetLanguage);
+                                log.info("Translation task for work {} is finished", token);
+                                return result;
+                            },
                             executorService
                     );
             tasks.add(completableFuture);
@@ -46,6 +53,7 @@ public class TranslationServiceImpl implements TranslationService {
         String resultSourceLanguage = sourceLanguage;
         if (resultSourceLanguage == null) {
             resultSourceLanguage = tasks.getFirst().get().sourceLanguage();
+            log.info("Detect language: {}. For text with first word: {}", resultSourceLanguage, tokens[0]);
         }
 
         return new TranslateResponse(
