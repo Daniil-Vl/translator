@@ -21,19 +21,6 @@ public class LiquibaseTest extends DomainAbstractTest {
     }
 
     @Test
-    public void testLanguageLiquibaseSchema() {
-        String actual = jdbcClient
-                .sql("SELECT fullname FROM language WHERE name = 'en'")
-                .query(String.class)
-                .single();
-
-        String expected = "english";
-
-        assertThat(actual).isEqualTo(expected);
-    }
-
-
-    @Test
     public void testTranslationLiquibaseSchema() {
         TranslationDto actual = jdbcClient
                 .sql("SELECT * FROM translation WHERE user_ip = '127.0.0.1'")

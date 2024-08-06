@@ -36,10 +36,6 @@ public abstract class DomainAbstractTest extends TranslatorApplicationTests {
                 .update();
 
         jdbcClient
-                .sql("INSERT INTO language (name, fullname) VALUES ('en', 'english'), ('ru', 'russian')")
-                .update();
-
-        jdbcClient
                 .sql("""
                         INSERT INTO translation
                         (source_text, translated_text, source_language, target_language, user_ip, translation_date_time)
@@ -59,7 +55,6 @@ public abstract class DomainAbstractTest extends TranslatorApplicationTests {
     @AfterEach
     public void resetDB() {
         jdbcClient.sql("DELETE FROM translation").update();
-        jdbcClient.sql("DELETE FROM language").update();
         jdbcClient.sql("DELETE FROM users").update();
     }
 }

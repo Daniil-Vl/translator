@@ -3,8 +3,5 @@ databaseChangeLog:
       file: sql/init_users.sql
       relativeToChangelogFile: true
   - include:
-      file: sql/init_language.sql
-      relativeToChangelogFile: true
-  - include:
       file: sql/init_translation.sql
       relativeToChangelogFile: true
