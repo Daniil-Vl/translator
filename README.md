@@ -50,7 +50,7 @@ YANDEX_DETECT_LANGUAGE_URL=https://translate.api.cloud.yandex.net/translate/v2/d
 YANDEX_API_KEY=<YOUR_YANDEX_CLOUD_API_KEY>
 
 # Dockerfile
-DOCKERFILE=Dockerfile-without-build
+DOCKERFILE=Dockerfile-with-build
 ```
 
 #### Замечания
