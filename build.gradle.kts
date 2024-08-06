@@ -23,6 +23,28 @@ repositories {
     mavenCentral()
 }
 
+//configurations {
+//    all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+//    all*.exclude group: 'ch.qos.logback', module: 'logback-classic'
+//    all*.exclude group: 'ch.qos.logback', module: 'logback-core'
+//}
+
+//configurations.forEach {
+//    it.exclude("org.springframework.boot", "spring-boot-starter-logging")
+//}
+
+// Groovy
+//configurations {
+//    all*.exclude group: 'com.google.guava', module: 'listenablefuture'
+//}
+
+// Kotlin
+//configurations.forEach {
+//    it.exclude("com.google.guava", "listenablefuture")
+//    it.exclude(group = "org.jetbrains", module = "annotations")
+//}
+
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -43,6 +65,13 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-log4j2")
+    modules {
+        module("org.springframework.boot:spring-boot-starter-logging") {
+            replacedBy("org.springframework.boot:spring-boot-starter-log4j2", "Use Log4j2 instead of Logback")
+        }
+    }
 }
 
 tasks.withType<Test> {
