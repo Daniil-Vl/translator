@@ -17,7 +17,7 @@ services:
   postgresql:
     image: postgres:16
     ports:
-      - "5432:5432"
+      - ${POSTGRES_PORT}:5432
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -34,7 +34,7 @@ services:
     command:
       - --changelog-file=master.yaml
       - --driver=org.postgresql.Driver
-      - --url=jdbc:postgresql://postgresql:5432/${POSTGRES_DB}
+      - --url=jdbc:postgresql://postgresql:${POSTGRES_PORT}/${POSTGRES_DB}
       - --username=${POSTGRES_USER}
       - --password=${POSTGRES_PASSWORD}
       - update
