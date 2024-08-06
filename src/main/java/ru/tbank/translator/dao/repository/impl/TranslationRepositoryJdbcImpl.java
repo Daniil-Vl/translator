@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import ru.tbank.translator.dao.model.Translation;
 import ru.tbank.translator.dao.repository.TranslationRepository;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Repository
@@ -31,11 +32,14 @@ public class TranslationRepositoryJdbcImpl implements TranslationRepository {
     }
 
     @Override
-    public List<Translation> getTranslationHistoryByIp(String userIp) {
+    public List<Translation> getTranslationHistoryByIp(String userIp, OffsetDateTime from, OffsetDateTime to) {
         return jdbcClient
-                .sql("SELECT * FROM translation WHERE user_ip = ?::cidr")
+                .sql("SELECT * FROM translation WHERE user_ip = ?::cidr AND translation_date_time BETWEEN ? AND ?")
                 .param(userIp)
+                .param(from)
+                .param(to)
                 .query(Translation.class)
                 .list();
     }
+
 }

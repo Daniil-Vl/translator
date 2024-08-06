@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import ru.tbank.translator.DomainAbstractTest;
 import ru.tbank.translator.dao.model.Translation;
 
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
@@ -41,13 +42,16 @@ public abstract class TranslationRepositoryTest extends DomainAbstractTest {
 
     @Test
     void givenUserIp_whenRepositoryGetTranslationHistoryByIp_thenReturnEntireHistorySuccessfully() {
+        OffsetDateTime dateTime = OffsetDateTime.of(2024, 1, 1, 1, 1, 1, 1, ZoneOffset.UTC)
+                .truncatedTo(ChronoUnit.SECONDS);
+
         Translation first = new Translation(
                 "first",
                 "первый",
                 "en",
                 "ru",
                 "127.0.0.10/32",
-                OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS)
+                dateTime
         );
         Translation second = new Translation(
                 "второй",
@@ -55,11 +59,19 @@ public abstract class TranslationRepositoryTest extends DomainAbstractTest {
                 "ru",
                 "en",
                 "127.0.0.10/32",
-                OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS)
+                dateTime.plus(Duration.ofDays(1))
         );
         Translation third = new Translation(
                 "third",
                 "третий",
+                "en",
+                "ru",
+                "127.0.0.10/32",
+                dateTime.plus(Duration.ofDays(10))
+        );
+        Translation fourth = new Translation(
+                "fourth",
+                "четвертый",
                 "en",
                 "ru",
                 "127.0.0.20/32",
@@ -71,8 +83,13 @@ public abstract class TranslationRepositoryTest extends DomainAbstractTest {
         translationRepository.addTranslation(first);
         translationRepository.addTranslation(second);
         translationRepository.addTranslation(third);
+        translationRepository.addTranslation(fourth);
 
-        List<Translation> actual = translationRepository.getTranslationHistoryByIp("127.0.0.10/32");
+        List<Translation> actual = translationRepository.getTranslationHistoryByIp(
+                "127.0.0.10/32",
+                dateTime.minus(Duration.ofSeconds(10)),
+                dateTime.plus(Duration.ofDays(2))
+        );
 
         assertThat(actual).containsExactlyInAnyOrder(first, second);
     }

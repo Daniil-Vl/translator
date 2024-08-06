@@ -7,12 +7,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import ru.tbank.translator.dto.TranslationDto;
 import ru.tbank.translator.dto.controller_dto.TranslateRequest;
 import ru.tbank.translator.dto.controller_dto.TranslateResponse;
+import ru.tbank.translator.dto.controller_dto.TranslationHistoryRequest;
 import ru.tbank.translator.dto.errors.ApiErrorResponse;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -52,4 +56,14 @@ public interface TranslatorController {
             HttpServletRequest httpServletRequest
     ) throws ExecutionException, InterruptedException;
 
+
+    @Operation(summary = "Получить история переводов за определенный период времени")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "История переводов успешно получена"
+            )
+    })
+    @GetMapping("/translation-history")
+    List<TranslationDto> getTranslationHistoryByIp(@RequestBody TranslationHistoryRequest requestBody, HttpServletRequest request);
 }

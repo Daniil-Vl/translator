@@ -9,6 +9,7 @@ import ru.tbank.translator.dao.repository.TranslationRepository;
 import ru.tbank.translator.dto.yandex_translate.TranslateResponse;
 import ru.tbank.translator.service.TranslationService;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -75,5 +76,10 @@ public class TranslationServiceImpl implements TranslationService {
     @Override
     public void saveTranslation(Translation translation) {
         translationRepository.addTranslation(translation);
+    }
+
+    @Override
+    public List<Translation> getTranslationHistoryByIp(String userIp, OffsetDateTime from, OffsetDateTime to) {
+        return translationRepository.getTranslationHistoryByIp(userIp, from, to);
     }
 }
