@@ -5,7 +5,6 @@ services:
     container_name: translator-service-container
     build:
       dockerfile: Dockerfile
-    image: translator:latest
     depends_on:
       - postgresql
     env_file:
