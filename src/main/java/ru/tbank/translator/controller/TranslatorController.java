@@ -36,10 +36,10 @@ public interface TranslatorController {
                             Тело запроса содержит пустые строки (текст или один из языков) / \n
                             Ошибка доступа к ресурсу перевода
                             """,
-                    content= @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ApiErrorResponse.class)
-            )
+                    content = @Content(
+                            mediaType = APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ApiErrorResponse.class)
+                    )
             )
     })
     @PostMapping(
