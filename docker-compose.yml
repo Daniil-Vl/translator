@@ -1,10 +1,8 @@
-version: "2.29.0"
-
 services:
   translator-service:
     container_name: translator-service-container
     build:
-      dockerfile: Dockerfile
+      dockerfile: ${DOCKERFILE}
     depends_on:
       - postgresql
     env_file:
