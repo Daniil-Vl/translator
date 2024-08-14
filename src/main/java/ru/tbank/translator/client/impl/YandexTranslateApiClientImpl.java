@@ -2,6 +2,7 @@ package ru.tbank.translator.client.impl;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -13,6 +14,7 @@ import ru.tbank.translator.exceptions.TranslateApiUnavailableException;
 
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 @Log4j2
@@ -34,8 +36,11 @@ public class YandexTranslateApiClientImpl implements TranslateApiClient {
         httpHeaders.set(HttpHeaders.AUTHORIZATION, "Api-Key " + applicationConfig.yandexApiKey());
     }
 
+    @Async
     @Override
-    public TranslateResponse translateWord(String word, String sourceLanguage, String targetLanguage) {
+    public CompletableFuture<TranslateResponse> translateWord(String word, String sourceLanguage, String targetLanguage) {
+        log.info("Translate word {} from {} language to {} language", word, sourceLanguage, targetLanguage);
+
         TranslateRequest bodyDto = new TranslateRequest(
                 sourceLanguage,
                 targetLanguage,
@@ -49,15 +54,21 @@ public class YandexTranslateApiClientImpl implements TranslateApiClient {
             sourceLanguage = translationResult.detectedLanguageCode();
         }
 
-        return new TranslateResponse(
+
+        TranslateResponse translateResponse = new TranslateResponse(
                 translationResult.text(),
                 sourceLanguage,
                 targetLanguage
         );
+
+        return CompletableFuture.completedFuture(translateResponse);
     }
 
+    @Async
     @Override
-    public TranslateResponse translateWord(String word, String targetLanguage) {
+    public CompletableFuture<TranslateResponse> translateWord(String word, String targetLanguage) {
+        log.info("Translate word {} to {} language", word, targetLanguage);
+
         TranslateRequest bodyDto = new TranslateRequest(
                 null,
                 targetLanguage,
@@ -67,15 +78,20 @@ public class YandexTranslateApiClientImpl implements TranslateApiClient {
         YandexTranslateResponseDto yandexTranslateResponseDto = getTranslatedWord(bodyDto);
         YandexTranslateResponseDto.TranslationResult translationResult = yandexTranslateResponseDto.translationResults().getFirst();
 
-        return new TranslateResponse(
+        TranslateResponse translateResponse = new TranslateResponse(
                 translationResult.text(),
                 translationResult.detectedLanguageCode(),
                 targetLanguage
         );
+
+        return CompletableFuture.completedFuture(translateResponse);
     }
 
+    @Async
     @Override
-    public String detectLanguage(String word) {
+    public CompletableFuture<String> detectLanguage(String word) {
+        log.info("Detect word's '{}' language", word);
+
         DetectLanguageRequest bodyDto = new DetectLanguageRequest(word);
 
         HttpEntity<DetectLanguageRequest> httpEntity = new HttpEntity<>(bodyDto, httpHeaders);
@@ -84,7 +100,8 @@ public class YandexTranslateApiClientImpl implements TranslateApiClient {
                 detectLanguageApiUrl, HttpMethod.POST, httpEntity, DetectLanguageResponse.class
         );
 
-        return result.getBody().languageCode();
+        String s = result.getBody().languageCode();
+        return CompletableFuture.completedFuture(s);
     }
 
     private YandexTranslateResponseDto getTranslatedWord(TranslateRequest bodyDto) {

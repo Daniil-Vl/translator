@@ -13,6 +13,7 @@ import ru.tbank.translator.configuration.ApplicationConfig;
 import ru.tbank.translator.dao.repository.TranslationRepository;
 import ru.tbank.translator.dto.yandex_translate.TranslateResponse;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,30 +37,42 @@ class TranslationServiceImplTest {
         Mockito.when(
                 translateApiClient.translateWord("Hello", "en", "ru")
         ).thenReturn(
-                new TranslateResponse("Привет", "en", "ru")
+                CompletableFuture.completedFuture(
+                        new TranslateResponse("Привет", "en", "ru")
+                )
         );
 
         Mockito.when(
                 translateApiClient.translateWord("world", "en", "ru")
         ).thenReturn(
-                new TranslateResponse("мир", "en", "ru")
+                CompletableFuture.completedFuture(
+                        new TranslateResponse("мир", "en", "ru")
+                )
         );
 
         Mockito.when(
                 translateApiClient.translateWord("Hello", null, "ru")
         ).thenReturn(
-                new TranslateResponse("Привет", "en", "ru")
+                CompletableFuture.completedFuture(
+                        new TranslateResponse("Привет", "en", "ru")
+                )
         );
 
         Mockito.when(
                 translateApiClient.translateWord("world", null, "ru")
         ).thenReturn(
-                new TranslateResponse("мир", "en", "ru")
+                CompletableFuture.completedFuture(
+                        new TranslateResponse("мир", "en", "ru")
+                )
         );
     }
 
     void initMockedDetectLanguageMethod() {
-        Mockito.when(translateApiClient.detectLanguage("Hello world")).thenReturn("en");
+        Mockito.when(
+                translateApiClient.detectLanguage("Hello world")
+        ).thenReturn(
+                CompletableFuture.completedFuture("en")
+        );
     }
 
     void initMockedApplicationConfig() {
@@ -70,7 +83,7 @@ class TranslationServiceImplTest {
     void initTranslationService() {
         initMockedTranslateMethod();
         initMockedApplicationConfig();
-        translationServiceImpl = new TranslationServiceImpl(translateApiClient, applicationConfig, translationRepository);
+        translationServiceImpl = new TranslationServiceImpl(translateApiClient, translationRepository);
     }
 
     @Test

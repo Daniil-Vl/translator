@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -132,25 +134,25 @@ class YandexTranslateApiClientImplTest {
     }
 
     @Test
-    void givenTextAndBothLanguages_whenTranslateWord_thenSuccessfullyTranslated() {
-        TranslateResponse translateResponse = yandexTranslateApiClient.translateWord(TEXT, SOURCE_LANGUAGE, TARGET_LANGUAGE);
+    void givenTextAndBothLanguages_whenTranslateWord_thenSuccessfullyTranslated() throws ExecutionException, InterruptedException {
+        CompletableFuture<TranslateResponse> translateResponse = yandexTranslateApiClient.translateWord(TEXT, SOURCE_LANGUAGE, TARGET_LANGUAGE);
 
-        assertThat(translateResponse.translatedText()).isEqualTo(TRANSLATED_TEXT);
+        assertThat(translateResponse.get().translatedText()).isEqualTo(TRANSLATED_TEXT);
     }
 
     @Test
-    void givenTextAndTargetLanguage_whenTranslateWord_thenSuccessfullyTranslatedAndDetectSourceLanguage() {
-        TranslateResponse translateResponse = yandexTranslateApiClient.translateWord(TEXT, TARGET_LANGUAGE);
+    void givenTextAndTargetLanguage_whenTranslateWord_thenSuccessfullyTranslatedAndDetectSourceLanguage() throws ExecutionException, InterruptedException {
+        CompletableFuture<TranslateResponse> translateResponse = yandexTranslateApiClient.translateWord(TEXT, TARGET_LANGUAGE);
 
-        assertThat(translateResponse.translatedText()).isEqualTo(TRANSLATED_TEXT);
-        assertThat(translateResponse.sourceLanguage()).isEqualTo(SOURCE_LANGUAGE);
+        assertThat(translateResponse.get().translatedText()).isEqualTo(TRANSLATED_TEXT);
+        assertThat(translateResponse.get().sourceLanguage()).isEqualTo(SOURCE_LANGUAGE);
     }
 
     @Test
-    void givenText_whenDetectLanguage_thenSuccessfullyDetectsLanguage() {
-        String detectedLanguage = yandexTranslateApiClient.detectLanguage(TEXT);
+    void givenText_whenDetectLanguage_thenSuccessfullyDetectsLanguage() throws ExecutionException, InterruptedException {
+        CompletableFuture<String> detectedLanguage = yandexTranslateApiClient.detectLanguage(TEXT);
 
-        assertThat(detectedLanguage).isEqualTo(SOURCE_LANGUAGE);
+        assertThat(detectedLanguage.get()).isEqualTo(SOURCE_LANGUAGE);
     }
 
     @Test

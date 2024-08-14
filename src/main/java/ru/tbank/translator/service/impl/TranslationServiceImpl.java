@@ -3,7 +3,6 @@ package ru.tbank.translator.service.impl;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import ru.tbank.translator.client.TranslateApiClient;
-import ru.tbank.translator.configuration.ApplicationConfig;
 import ru.tbank.translator.dao.model.Translation;
 import ru.tbank.translator.dao.repository.TranslationRepository;
 import ru.tbank.translator.dto.yandex_translate.TranslateResponse;
@@ -14,21 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Service
 @Log4j2
 public class TranslationServiceImpl implements TranslationService {
 
     private final TranslateApiClient translateApiClient;
-    private final ExecutorService executorService;
     private final TranslationRepository translationRepository;
 
-    public TranslationServiceImpl(TranslateApiClient translateApiClient, ApplicationConfig applicationConfig, TranslationRepository translationRepository) {
+    public TranslationServiceImpl(TranslateApiClient translateApiClient, TranslationRepository translationRepository) {
         this.translateApiClient = translateApiClient;
         this.translationRepository = translationRepository;
-        this.executorService = Executors.newFixedThreadPool(applicationConfig.threadsNumber());
     }
 
     @Override
@@ -38,17 +33,9 @@ public class TranslationServiceImpl implements TranslationService {
         List<CompletableFuture<TranslateResponse>> tasks = new ArrayList<>();
 
         for (String token : tokens) {
-            CompletableFuture<TranslateResponse> completableFuture = CompletableFuture
-                    .supplyAsync(
-                            () -> {
-                                log.info("Translation task for work {} is starting...", token);
-                                var result = translateApiClient.translateWord(token, sourceLanguage, targetLanguage);
-                                log.info("Translation task for work {} is finished", token);
-                                return result;
-                            },
-                            executorService
-                    );
-            tasks.add(completableFuture);
+            CompletableFuture<TranslateResponse> response =
+                    translateApiClient.translateWord(token, sourceLanguage, targetLanguage);
+            tasks.add(response);
         }
 
         for (var task : tasks) {
