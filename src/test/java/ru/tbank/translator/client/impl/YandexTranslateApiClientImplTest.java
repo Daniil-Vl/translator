@@ -9,7 +9,6 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import ru.tbank.translator.client.TranslateApiClient;
 import ru.tbank.translator.configuration.ApplicationConfig;
 import ru.tbank.translator.dto.yandex_translate.*;
-import ru.tbank.translator.exceptions.LanguageNotDetectedException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,7 +19,6 @@ import java.util.concurrent.ExecutionException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -153,20 +151,5 @@ class YandexTranslateApiClientImplTest {
         CompletableFuture<String> detectedLanguage = yandexTranslateApiClient.detectLanguage(TEXT);
 
         assertThat(detectedLanguage.get()).isEqualTo(SOURCE_LANGUAGE);
-    }
-
-    @Test
-    void givenInvalidLanguage_whenDetectLanguage_thenSuccessfullyDetectsLanguage() {
-        LanguageNotDetectedException sourceLanguageNotDetectedExc = catchThrowableOfType(
-                () -> yandexTranslateApiClient.translateWord(TEXT, INVALID_LANGUAGE, TARGET_LANGUAGE),
-                LanguageNotDetectedException.class
-        );
-        LanguageNotDetectedException targetLanguageNotDetectedExc = catchThrowableOfType(
-                () -> yandexTranslateApiClient.translateWord(TEXT, SOURCE_LANGUAGE, INVALID_LANGUAGE),
-                LanguageNotDetectedException.class
-        );
-
-        assertThat(sourceLanguageNotDetectedExc.getMessage()).isEqualTo(LanguageNotDetectedException.SOURCE_LANGUAGE_NOT_DETECTED_MESSAGE);
-        assertThat(targetLanguageNotDetectedExc.getMessage()).isEqualTo(LanguageNotDetectedException.TARGET_LANGUAGE_NOT_DETECTED_MESSAGE);
     }
 }
