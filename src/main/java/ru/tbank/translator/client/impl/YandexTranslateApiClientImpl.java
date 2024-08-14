@@ -4,13 +4,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import ru.tbank.translator.client.TranslateApiClient;
 import ru.tbank.translator.configuration.ApplicationConfig;
 import ru.tbank.translator.dto.yandex_translate.*;
-import ru.tbank.translator.exceptions.LanguageNotDetectedException;
-import ru.tbank.translator.exceptions.TranslateApiUnavailableException;
 
 import java.net.URI;
 import java.util.List;
@@ -106,50 +103,8 @@ public class YandexTranslateApiClientImpl implements TranslateApiClient {
 
     private YandexTranslateResponseDto getTranslatedWord(TranslateRequest bodyDto) {
         HttpEntity<TranslateRequest> httpEntity = new HttpEntity<>(bodyDto, httpHeaders);
-
-        // It is necessary to handle errors here, because it is impossible to receive an error message in ResponseErrorHandler
-        try {
-            return restTemplate
-                    .exchange(translateApiUrl, HttpMethod.POST, httpEntity, YandexTranslateResponseDto.class)
-                    .getBody();
-        } catch (HttpClientErrorException exc) {
-            if (exc.getStatusCode().is5xxServerError()) {
-                log.warn("Caught http {} response", exc.getStatusCode());
-                throw new TranslateApiUnavailableException();
-            }
-
-            if (exc.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
-                log.warn("Caught http {} response with request body {}", exc.getStatusCode(), bodyDto);
-                throw getCause(exc.getMessage());
-            }
-
-            log.fatal("Cannot process {}", exc.toString());
-            throw new RuntimeException(exc);
-        }
-    }
-
-    /**
-     * Determines which of the languages was not found and throws an exception with the corresponding message.
-     *
-     * @param errorMessage - error message from yandex translate api
-     * @return exception with corresponding message
-     */
-    private LanguageNotDetectedException getCause(String errorMessage) {
-        /*
-        Message from yandex api looks like this:
-              400 Bad Request: "{<EOL> "code": 3,<EOL> "message": "unsupported target_language_code: fu",<EOL> ...
-         or this:
-              400 Bad Request: "{<EOL> "code": 3,<EOL> "message": "unsupported source_language_code: fu",<EOL> ...
-        */
-
-        String languageType = errorMessage.substring(65, 71);
-
-        String exceptionMessage = switch (languageType) {
-            case "target" -> LanguageNotDetectedException.TARGET_LANGUAGE_NOT_DETECTED_MESSAGE;
-            case "source" -> LanguageNotDetectedException.SOURCE_LANGUAGE_NOT_DETECTED_MESSAGE;
-            default -> throw new IllegalStateException("Unexpected value: " + languageType);
-        };
-
-        return new LanguageNotDetectedException(exceptionMessage);
+        return restTemplate
+                .exchange(translateApiUrl, HttpMethod.POST, httpEntity, YandexTranslateResponseDto.class)
+                .getBody();
     }
 }
